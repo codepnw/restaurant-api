@@ -22,12 +22,6 @@ func DatabaseInstance() *mongo.Client {
 		log.Fatal(err)
 	}
 
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
 	fmt.Println("connected database")
 	return client
 }
