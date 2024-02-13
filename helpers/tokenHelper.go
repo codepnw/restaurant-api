@@ -27,7 +27,7 @@ var userCollection *mongo.Collection = database.OpenCollection(database.Client, 
 
 var SECRET_KEY string = os.Getenv("SECRET_KEY")
 
-func GenerateAllTokens(email, firstname, lastName, uid string) (token, refreshToken string, err error) {
+func GenerateAllTokens(email, firstname, lastName, uid string) (signedToken string, signedRefreshToken string, err error) {
 	claims := &SignedDetails{
 		Email:     email,
 		FirstName: firstname,
@@ -44,14 +44,14 @@ func GenerateAllTokens(email, firstname, lastName, uid string) (token, refreshTo
 		},
 	}
 
-	token, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
-	refreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
 
 	if err != nil {
 		log.Panic(err)
 	}
 
-	return
+	return token, refreshToken, err
 }
 
 func UpdateAllTokens(signedToken, signedRefreshToken, userId string) {
@@ -111,5 +111,5 @@ func ValidateToken(SignedToken string) (claims *SignedDetails, msg string) {
 		return
 	}
 
-	return
+	return claims, msg
 }

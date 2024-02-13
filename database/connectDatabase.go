@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func DatabaseInstance() (client *mongo.Client) {
+func DatabaseInstance() *mongo.Client {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -22,19 +22,13 @@ func DatabaseInstance() (client *mongo.Client) {
 		log.Fatal(err)
 	}
 
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			log.Fatal(err)
-		}
-	}()
-
 	fmt.Println("connected database")
-	return 
+	return client
 }
 
 var Client *mongo.Client = DatabaseInstance()
 
-func openCollection(client *mongo.Client, collectionName string) (collection *mongo.Collection) {
-	collection = client.Database("gorestaurant").Collection(collectionName)
-	return 
+func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collection {
+	var collection = client.Database("gorestaurant").Collection(collectionName)
+	return collection
 }
