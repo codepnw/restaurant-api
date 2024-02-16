@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"github.com/codepnw/restaurant-api/middleware"
 	r "github.com/codepnw/restaurant-api/routers"
 	"github.com/gin-gonic/gin"
 )
@@ -17,6 +18,9 @@ func main() {
 	router.Use(gin.Logger())
 
 	r.UserRoutes(router)
+	router.Use(middleware.Authentication())
+
+	r.FoodRoutes(router)
 
 	router.Run(":" + port)
 }
