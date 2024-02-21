@@ -72,16 +72,18 @@ func GetUser() gin.HandlerFunc {
 		defer cancel()
 
 		userId := c.Param("user_id")
+		fmt.Printf("user_id: %s, %s\n", userId, userId)
 
 		var user models.User
 
 		err := userCollection.FindOne(ctx, bson.M{"user_id": userId}).Decode(&user)
+		fmt.Printf("fineone_err: %v\n", err)
 
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while listing user items"})
 			return
 		}
-		c.JSON(http.StatusOK, err)
+		c.JSON(http.StatusOK, user)
 	}
 }
 
@@ -139,7 +141,6 @@ func SignUp() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
 			return
 		}
-		defer cancel()
 
 		c.JSON(http.StatusOK, resultInsertionNumber)
 	}
