@@ -53,6 +53,7 @@ func GetTable() gin.HandlerFunc {
 func CreateTable() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
 
 		var table models.Table
 
